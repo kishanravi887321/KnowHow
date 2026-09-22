@@ -32,6 +32,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.12",
     "@types/maplibre-gl": "^1.13.2",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
