@@ -1,121 +1,297 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
 
+const summaryData = [
+  { label: 'Cloudburst Risk', value: '68%', trend: '+15%', tone: 'high' },
+  { label: 'Thunderstorm Risk', value: '42%', trend: '+8%', tone: 'moderate' },
+  { label: 'Flash Flood Risk', value: '71%', trend: '+12%', tone: 'high' },
+]
+
+const alerts = [
+  { region: 'Mumbai Metropolitan', type: 'Cloudburst', level: 'Severe', time: '1–3 hrs' },
+  { region: 'Delhi NCR', type: 'Thunderstorm', level: 'High', time: '3–6 hrs' },
+  { region: 'Jaipur Region', type: 'Flash Flood', level: 'High', time: '2–4 hrs' },
+]
+
+const forecastData = [
+  { label: 'Rainfall', value: '184 mm/hr', status: 'Extreme' },
+  { label: 'CAPE', value: '2200 J/kg', status: 'Elevated' },
+  { label: 'IWV', value: '58 kg/m²', status: 'Moist' },
+  { label: 'Wind Shear', value: '32 m/s', status: 'Strong' },
+]
+
+const riskZones = [
+  { region: 'Mumbai', risk: 'high', value: '68%' },
+  { region: 'Pune', risk: 'moderate', value: '42%' },
+  { region: 'Delhi NCR', risk: 'high', value: '71%' },
+  { region: 'Jaipur', risk: 'low', value: '28%' },
+  { region: 'Ahmedabad', risk: 'moderate', value: '56%' },
+  { region: 'Hyderabad', risk: 'extreme', value: '84%' },
+  { region: 'Kolkata', risk: 'moderate', value: '49%' },
+  { region: 'Chennai', risk: 'low', value: '31%' },
+  { region: 'Bengaluru', risk: 'low', value: '24%' },
+  { region: 'Nagpur', risk: 'high', value: '63%' },
+  { region: 'Surat', risk: 'moderate', value: '51%' },
+  { region: 'Lucknow', risk: 'high', value: '66%' },
+]
+
+const navItems = ['Overview', 'Risk Map', 'Alerts', 'Forecasts', 'Analytics']
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeSection, setActiveSection] = useState('Overview')
+
+  const renderOverview = () => (
+    <>
+      <section className="summary-grid">
+        {summaryData.map((item) => (
+          <article key={item.label} className={`summary-card ${item.tone}`}>
+            <div className="summary-meta">
+              <span>{item.label}</span>
+              <span className="trend">{item.trend}</span>
+            </div>
+            <strong>{item.value}</strong>
+          </article>
+        ))}
+      </section>
+
+      <section className="content-grid">
+        <div className="map-panel">
+          <div className="panel-header">
+            <h3>Risk Map</h3>
+            <span className="pill warning">Monitoring</span>
+          </div>
+
+          <div className="map-surface">
+            <div className="map-grid">
+              <span className="grid-cell low" />
+              <span className="grid-cell moderate" />
+              <span className="grid-cell high" />
+              <span className="grid-cell low" />
+              <span className="grid-cell moderate" />
+              <span className="grid-cell extreme" />
+              <span className="grid-cell moderate" />
+              <span className="grid-cell high" />
+              <span className="grid-cell low" />
+              <span className="grid-cell moderate" />
+              <span className="grid-cell low" />
+              <span className="grid-cell high" />
+            </div>
+            <div className="map-badge">2–6 hour outlook</div>
+          </div>
+        </div>
+
+        <div className="stack-panel">
+          <div className="panel-header">
+            <h3>Active Alerts</h3>
+            <span className="pill danger">3 active</span>
+          </div>
+
+          <div className="alert-list">
+            {alerts.map((alert) => (
+              <div key={alert.region} className="alert-item">
+                <div>
+                  <strong>{alert.region}</strong>
+                  <p>{alert.type}</p>
+                </div>
+                <div className="alert-meta">
+                  <span className="level-label">{alert.level}</span>
+                  <small>{alert.time}</small>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bottom-grid">
+        <div className="panel">
+          <div className="panel-header">
+            <h3>Atmospheric Drivers</h3>
+          </div>
+          <div className="metrics-list">
+            {forecastData.map((item) => (
+              <div key={item.label} className="metric-row">
+                <span>{item.label}</span>
+                <div>
+                  <strong>{item.value}</strong>
+                  <em>{item.status}</em>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="panel-header">
+            <h3>Decision Support</h3>
+          </div>
+          <ul className="insight-list">
+            <li>Low-level convergence is intensifying over the western corridor.</li>
+            <li>Cloud-top cooling suggests stronger convective development with 3-4h lead time.</li>
+            <li>Urban drainage zones remain the highest flash-flood exposure areas.</li>
+          </ul>
+        </div>
+      </section>
+    </>
+  )
+
+  const renderRiskMap = () => (
+    <section className="single-panel-view">
+      <div className="panel large-panel">
+        <div className="panel-header">
+          <div>
+            <h3>Risk Map</h3>
+            <p className="panel-subtitle">Predicted extreme-weather exposure by region</p>
+          </div>
+          <div className="map-controls">
+            <button type="button" className="map-control active">2–6 hours</button>
+            <button type="button" className="map-control">6–12 hours</button>
+          </div>
+        </div>
+        <div className="map-surface large-map">
+          <div className="map-grid">
+            {riskZones.map((zone) => (
+              <div key={zone.region} className={`grid-cell ${zone.risk}`}>
+                <strong>{zone.region}</strong>
+                <span>{zone.value} risk</span>
+              </div>
+            ))}
+          </div>
+          <div className="map-overlay-label">Live precipitation model</div>
+          <div className="map-legend" aria-label="Risk level legend">
+            <span><i className="legend-dot low" />Low</span>
+            <span><i className="legend-dot moderate" />Moderate</span>
+            <span><i className="legend-dot high" />High</span>
+            <span><i className="legend-dot extreme" />Extreme</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+
+  const renderAlerts = () => (
+    <section className="single-panel-view">
+      <div className="panel large-panel">
+        <div className="panel-header">
+          <h3>Alerts</h3>
+          <span className="pill danger">3 active</span>
+        </div>
+        <div className="alert-list stacked-alert-list">
+          {alerts.map((alert) => (
+            <div key={alert.region} className="alert-item wide-alert-item">
+              <div>
+                <strong>{alert.region}</strong>
+                <p>{alert.type}</p>
+              </div>
+              <div className="alert-meta">
+                <span className="level-label">{alert.level}</span>
+                <small>{alert.time}</small>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+
+  const renderForecasts = () => (
+    <section className="single-panel-view">
+      <div className="panel large-panel">
+        <div className="panel-header">
+          <h3>Forecasts</h3>
+          <span className="pill warning">Updated 3 min ago</span>
+        </div>
+        <div className="metrics-list">
+          {forecastData.map((item) => (
+            <div key={item.label} className="metric-row">
+              <span>{item.label}</span>
+              <div>
+                <strong>{item.value}</strong>
+                <em>{item.status}</em>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+
+  const renderAnalytics = () => (
+    <section className="single-panel-view">
+      <div className="panel large-panel">
+        <div className="panel-header">
+          <h3>Analytics</h3>
+          <span className="pill warning">Model confidence 86%</span>
+        </div>
+        <ul className="insight-list">
+          <li>Low-level convergence is intensifying over the western corridor.</li>
+          <li>Cloud-top cooling suggests stronger convective development with 3-4h lead time.</li>
+          <li>Urban drainage zones remain the highest flash-flood exposure areas.</li>
+          <li>Current risk model is calibrated toward elevated rainfall momentum and terrain-driven runoff.</li>
+        </ul>
+      </div>
+    </section>
+  )
+
+  const sectionRenderers = {
+    Overview: renderOverview,
+    'Risk Map': renderRiskMap,
+    Alerts: renderAlerts,
+    Forecasts: renderForecasts,
+    Analytics: renderAnalytics,
+  }
+
+  const currentSection = sectionRenderers[activeSection] || renderOverview
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="knowhow-app">
+      <aside className="sidebar">
+        <div className="brand-block">
+          <div className="brand-mark">K</div>
+          <div>
+            <p className="eyebrow">AI weather intelligence</p>
+            <h1>KnowHow</h1>
+          </div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
+        <nav className="nav-panel" aria-label="Sidebar navigation">
+          {navItems.map((item) => (
+            <button
+              key={item}
+              type="button"
+              className={`nav-item ${activeSection === item ? 'active' : ''}`}
+              onClick={() => setActiveSection(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </nav>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="mini-card">
+          <p className="label">System Status</p>
+          <div className="status-row">
+            <span className="dot live" />
+            Live Nowcasting Active
+          </div>
+          <small>Last refresh: 3 min ago</small>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </aside>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <main className="main-panel">
+        <header className="topbar">
+          <div>
+            <p className="eyebrow">Hyper-local early warning</p>
+            <h2>{activeSection === 'Overview' ? 'Extreme Weather Risk Dashboard' : activeSection}</h2>
+          </div>
+          <div className="top-actions">
+            <button type="button" className="ghost-btn">Export</button>
+            <button type="button" className="primary-btn">Issue Alert</button>
+          </div>
+        </header>
+
+        {currentSection()}
+      </main>
+    </div>
   )
 }
 
